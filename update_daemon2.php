@@ -73,6 +73,7 @@
 			if (time() - $started > Config::get(Config::DAEMON_MAX_CHILD_RUNTIME)) {
 				Debug::log("Child process with PID $pid seems to be stuck, aborting...");
 				posix_kill($pid, SIGKILL);
+				shell_exec("kill $pid");
 			}
 		}
 	}
