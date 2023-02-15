@@ -161,7 +161,7 @@ class RSSUtils {
 		if (count($feeds_to_update) > 0) {
 			$feeds_qmarks = arr_qmarks($feeds_to_update);
 
-			$tmph = $pdo->prepare("UPDATE ttrss_feeds SET last_update_started = NOW(), last_updated = NOW()
+			$tmph = $pdo->prepare("UPDATE ttrss_feeds SET last_update_started = NOW()
 				WHERE feed_url IN ($feeds_qmarks)");
 			$tmph->execute($feeds_to_update);
 		}
