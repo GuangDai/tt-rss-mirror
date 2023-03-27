@@ -588,7 +588,7 @@ class PluginHost {
 	function lookup_command(string $command) {
 		$command = "-" . strtolower($command);
 
-		if (array_key_exists($command, $this->commands) && is_array($this->commands[$command])) {
+		if (array_key_exists($command, $this->commands)) {
 			return $this->commands[$command]["class"];
 		} else {
 			return false;
@@ -781,7 +781,7 @@ class PluginHost {
 
 	// Plugin feed functions are *EXPERIMENTAL*!
 
-	// cat_id: only -1 is supported (Special)
+	// cat_id: only -1 (Feeds::CATEGORY_SPECIAL) is supported (Special)
 	function add_feed(int $cat_id, string $title, string $icon, Plugin $sender): int {
 
 		if (empty($this->feeds[$cat_id]))

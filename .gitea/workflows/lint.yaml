@@ -1,0 +1,51 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
+name: lint
+
+on:
+  - push
+  - workflow_dispatch
+  - pull_request
+
+defaults:
+  run:
+    shell: sh
+
+jobs:
+  lint:
+    runs-on: alpine-3.16
+    steps:
+      - name: checkout source
+        uses: actions/checkout@v3
+
+      - name: npm install
+        run: npm install
+
+      - name: eslint
+        run: npx eslint js plugins
+
+      - name: calculate cache key hash
+        uses: actions/go-hashfiles@v0.0.1
+        id: cache-hash
+        with:
+          patterns: |
+            classes/*.php
+            include/*.php
+            plugins/**/*.php
+
+      - name: phpunit
+        run: php81 ./vendor/bin/phpunit
+
+      - uses: https://github.com/actions/cache/restore@v3
+        id: cache-phpstan
+        with:
+          path: /tmp/phpstan
+          key: ${{ runner.os }}-phpstan-${{ steps.cache-hash.outputs.hash }}
+
+      - name: phpstan
+        run: php81 -d memory_limit=-1 ./vendor/bin/phpstan --memory-limit=2G
+
+      - uses: https://github.com/actions/cache/save@v3
+        with:
+          path: /tmp/phpstan
+          key: ${{ steps.cache-phpstan.outputs.cache-primary-key }}
