@@ -2248,6 +2248,9 @@ class Feeds extends Handler_Protected {
 					$query_limit
 					ttrss_entries.date_updated < NOW() - INTERVAL '$purge_interval days'");
 				$sth->execute([$feed_id]);
+				$sth = $pdo->prepare("DELETE FROM ttrss_entries WHERE NOT EXISTS (SELECT ref_id FROM ttrss_user_entries WHERE ref_id = id)");
+				$sth->execute();
+	
 
 			} else {
 				$sth  = $pdo->prepare("DELETE FROM ttrss_user_entries
